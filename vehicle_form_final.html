@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>자원안보 위기 경보에 따른 승용차 5부제 시행</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; background: #f5f5f5; color: #222; }
+  .container { max-width: 680px; margin: 2rem auto; background: #fff; border-radius: 12px; border: 1px solid #e0e0e0; padding: 2rem; }
+  h1 { font-size: 20px; font-weight: 600; margin-bottom: 6px; }
+  .sub-title { font-size: 17px; color: #4285f4; font-weight: 600; margin-bottom: 6px; }
+  .top-desc { font-size: 13px; color: #777; margin-bottom: 2rem; }
+  .sec-title { font-size: 11px; font-weight: 600; color: #999; text-transform: uppercase; letter-spacing: .06em; margin: 1.5rem 0 .6rem; }
+  label.field-label { display: block; font-size: 13px; color: #555; margin-bottom: 5px; }
+  input[type=text], select {
+    width: 100%; padding: 9px 12px; border: 1px solid #ddd; border-radius: 8px;
+    font-size: 14px; color: #222; background: #fff; outline: none;
+    transition: border-color .15s;
+  }
+  input[type=text]:focus, select:focus { border-color: #4285f4; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .field { margin-bottom: 12px; }
+  .cb-group { display: flex; flex-direction: column; gap: 8px; }
+  .cb-item { border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; transition: border-color .15s; }
+  .cb-item.checked { border-color: #4285f4; }
+  .cb-item-top { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; cursor: pointer; }
+  .cb-item-top input[type=checkbox] { margin-top: 2px; flex-shrink: 0; accent-color: #4285f4; width: 15px; height: 15px; }
+  .cb-label { font-size: 13px; font-weight: 500; color: #222; line-height: 1.5; }
+  .cb-sub { font-size: 12px; color: #888; line-height: 1.6; padding: 0 12px 10px 37px; border-top: 1px dashed #eee; margin-top: 2px; }
+  .docs-panel { display: none; margin: 0 12px 12px 37px; padding: 10px 12px; background: #e8f0fe; border-radius: 8px; }
+  .docs-panel.show { display: block; }
+  .docs-panel-title { font-size: 11px; font-weight: 600; color: #1a73e8; margin-bottom: 6px; text-transform: uppercase; letter-spacing: .04em; }
+  .docs-panel ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 5px; }
+  .docs-panel ul li { font-size: 13px; color: #1558b0; padding-left: 16px; position: relative; line-height: 1.6; }
+  .docs-panel ul li::before { content: "✓"; position: absolute; left: 0; color: #4285f4; font-size: 11px; top: 2px; }
+  .submit-btn {
+    width: 100%; padding: 13px; background: #4285f4; border: none; border-radius: 8px;
+    font-size: 15px; font-weight: 600; color: #fff; cursor: pointer; margin-top: 1.5rem;
+    transition: background .15s;
+  }
+  .submit-btn:hover { background: #2b6fd6; }
+  .submit-btn:disabled { background: #aaa; cursor: not-allowed; }
+  .result-msg { margin-top: 1rem; padding: 12px 16px; border-radius: 8px; font-size: 14px; text-align: center; display: none; }
+  .result-msg.success { background: #e6f4ea; color: #1e7e34; border: 1px solid #b7dfbf; }
+  .result-msg.error { background: #fce8e6; color: #c5221f; border: 1px solid #f5c6c5; }
+  .config-notice {
+    background: #fff8e1; border: 1px solid #ffe082; border-radius: 8px;
+    padding: 10px 14px; font-size: 12px; color: #7a5800; margin-bottom: 1.5rem; display: none;
+  }
+  @media (max-width: 480px) { .container { margin: 0; border-radius: 0; } .row2 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>자원안보 위기 경보에 따른 승용차 5부제 시행</h1>
+  <p class="sub-title">(세종중학교 교직원 대상)</p>
+  <p class="top-desc">입력하신 정보는 주차 및 승용차 요일제 관리에 활용됩니다.</p>
+
+  <!-- ⚠️ Apps Script URL 미설정 시 안내 -->
+  <div class="config-notice" id="config-notice">
+    ⚠️ <strong>관리자 설정 필요:</strong> 아래 스크립트의 <code>APPS_SCRIPT_URL</code>을 Google Apps Script 배포 URL로 교체해주세요.
+  </div>
+
+  <div class="sec-title">기본 정보</div>
+  <div class="field">
+    <label class="field-label">이름 <span style="color:#e53935;font-size:12px;">*</span></label>
+    <input type="text" id="f-name" placeholder="홍길동">
+  </div>
+
+  <div class="sec-title">차량 정보</div>
+  <div class="row2">
+    <div class="field">
+      <label class="field-label">차량번호 <span style="color:#e53935;font-size:12px;">*</span></label>
+      <input type="text" id="f-num" placeholder="12가 3456">
+    </div>
+    <div class="field">
+      <label class="field-label">차종 / 모델명 <span style="color:#e53935;font-size:12px;">*</span></label>
+      <input type="text" id="f-model" placeholder="현대 아이오닉6">
+    </div>
+  </div>
+
+  <div style="border-top:1px dashed #ddd;margin:1.5rem 0;"></div>
+  <div class="sec-title">승용차 요일제 적용제외 해당자 <span style="font-weight:400;text-transform:none;letter-spacing:0;">(선택사항)</span></div>
+  <div style="background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:13px;color:#7a5800;">
+    ※ 적용제외 대상일 경우에만 아래 항목을 선택하세요. 해당 없으면 선택하지 않으셔도 됩니다.
+  </div>
+  <div class="cb-group" id="cb-group"></div>
+
+  <div class="sec-title" style="margin-top:1.5rem;">신청서 및 증빙서류</div>
+  <div class="field">
+    <label class="field-label">제출 여부</label>
+    <select id="f-doc">
+      <option value="">선택해주세요</option>
+      <option value="제출완료">제출완료</option>
+      <option value="미제출">미제출</option>
+      <option value="해당없음">해당없음</option>
+    </select>
+  </div>
+
+  <button class="submit-btn" id="submit-btn" onclick="submitForm()">제출하기</button>
+  <div class="result-msg" id="result-msg"></div>
+</div>
+
+<script>
+// ============================================================
+// ▼ 관리자 설정: Apps Script 배포 후 URL을 여기에 붙여넣으세요
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxAZX-8VV7zZ7p8HJAgrtyF0HvaiAKhX7HDFFFVIp4ieD-roh5xZd9vguW1oSAKFUx5/exec';
+// ============================================================
+
+const REASONS = [
+  { value: '전기차', label: '전기차', sub: null,
+    docs: ['전기차 자동차등록증 사본'] },
+  { value: '수소차', label: '수소차', sub: null,
+    docs: ['수소차 자동차등록증 사본'] },
+  { value: '장애인 사용(동승) 자동차', label: '장애인 사용(동승) 자동차', sub: null,
+    docs: ['장애인 복지카드 사본 또는 장애인 등록증'] },
+  { value: '국가유공자 차량', label: '국가유공자 차량', sub: null,
+    docs: ['국가유공자증 사본'] },
+  { value: '임산부·유아(미취학 아동) 동승 차량', label: '임산부·유아(미취학 아동) 동승 차량', sub: null,
+    docs: [
+      '임신사실 확인: 병원증명서 또는 병원에서 발행한 임산부 수첩',
+      '영·유아원 또는 유치원 재원증명서 (유아 동승 시)'
+    ]},
+  { value: '대중교통 열악지역 또는 장거리(30km 이상) 출퇴근',
+    label: '대중교통 열악지역 또는 장거리(30km 이상) 출퇴근',
+    sub: '열악지역 기준: 최근접 정류장(역)까지 보행거리 800m 이상이거나, 출퇴근 시 배차간격이 30분을 초과하는 경우',
+    docs: [
+      '네이버 교통지도 등 출퇴근 경로 캡처 (거리 및 소요시간 표시)',
+      '장거리(30km 이상) 시: 주민등록등본 등 거주지 확인 가능한 서류'
+    ]},
+  { value: '대중교통 미운행 시간 출퇴근', label: '대중교통 미운행 시간 출퇴근', sub: null,
+    docs: ['대중교통 미운행 시간 근무 확인서 또는 근무표'] }
+];
+
+// URL 미설정 시 안내 표시
+if (APPS_SCRIPT_URL === 'SCRIPT_URL') {
+  document.getElementById('config-notice').style.display = 'block';
+}
+
+// 체크박스 그룹 생성
+function buildCheckboxGroup() {
+  const container = document.getElementById('cb-group');
+  let html = '';
+  for (let i = 0; i < REASONS.length; i++) {
+    const r = REASONS[i];
+    let docsHtml = '';
+    for (let j = 0; j < r.docs.length; j++) {
+      docsHtml += '<li>' + r.docs[j] + '</li>';
+    }
+    html += '<div class="cb-item" id="cb-item-' + i + '">';
+    html += '<label class="cb-item-top">';
+    html += '<input type="checkbox" value="' + r.value + '" onchange="onCbChange(' + i + ')">';
+    html += '<span class="cb-label">' + r.label + '</span>';
+    html += '</label>';
+    if (r.sub) { html += '<div class="cb-sub">' + r.sub + '</div>'; }
+    html += '<div class="docs-panel" id="docs-' + i + '">';
+    html += '<div class="docs-panel-title">필요 증빙서류</div>';
+    html += '<ul>' + docsHtml + '</ul>';
+    html += '</div></div>';
+  }
+  container.innerHTML = html;
+}
+
+function onCbChange(idx) {
+  const cb = document.querySelector(`#cb-item-${idx} input[type=checkbox]`);
+  const item = document.getElementById(`cb-item-${idx}`);
+  const docs = document.getElementById(`docs-${idx}`);
+  if (cb.checked) { item.classList.add('checked'); docs.classList.add('show'); }
+  else { item.classList.remove('checked'); docs.classList.remove('show'); }
+}
+
+function getCheckedReasons() {
+  return REASONS.filter((r, i) => {
+    const el = document.querySelector(`#cb-item-${i} input[type=checkbox]`);
+    return el && el.checked;
+  }).map(r => r.value);
+}
+
+function showMsg(type, text) {
+  const el = document.getElementById('result-msg');
+  el.className = 'result-msg ' + type;
+  el.textContent = text;
+  el.style.display = 'block';
+  if (type === 'success') setTimeout(() => { el.style.display = 'none'; }, 4000);
+}
+
+function submitForm() {
+  const name = document.getElementById('f-name').value.trim();
+  const num = document.getElementById('f-num').value.trim();
+  const model = document.getElementById('f-model').value.trim();
+  const doc = document.getElementById('f-doc').value;
+  const reasons = getCheckedReasons();
+
+  if (!name) { alert('이름을 입력해주세요.'); return; }
+  if (!num) { alert('차량번호를 입력해주세요.'); return; }
+  if (!model) { alert('차종/모델명을 입력해주세요.'); return; }
+
+  if (APPS_SCRIPT_URL === 'SCRIPT_URL') {
+    alert('관리자 설정이 필요합니다.\nAPPS_SCRIPT_URL을 설정해주세요.');
+    return;
+  }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = '제출 중...';
+
+  const payload = {
+    name, num, model,
+    reasons: reasons.join(', ') || '없음',
+    doc,
+    timestamp: new Date().toLocaleString('ko-KR')
+  };
+
+  var params = 'name=' + encodeURIComponent(payload.name)
+    + '&num=' + encodeURIComponent(payload.num)
+    + '&model=' + encodeURIComponent(payload.model)
+    + '&reasons=' + encodeURIComponent(payload.reasons)
+    + '&doc=' + encodeURIComponent(payload.doc)
+    + '&timestamp=' + encodeURIComponent(payload.timestamp);
+
+  var sc = document.createElement('script');
+  sc.src = APPS_SCRIPT_URL + '?callback=onSubmitDone&' + params;
+  document.body.appendChild(sc);
+
+  setTimeout(function() {
+    showMsg('success', '✓ 제출이 완료되었습니다. 감사합니다!');
+    document.getElementById('f-name').value = '';
+    document.getElementById('f-num').value = '';
+    document.getElementById('f-model').value = '';
+    document.getElementById('f-doc').value = '';
+    buildCheckboxGroup();
+    btn.disabled = false;
+    btn.textContent = '제출하기';
+  }, 1500);
+}
+
+buildCheckboxGroup();
+</script>
+</body>
+</html>
