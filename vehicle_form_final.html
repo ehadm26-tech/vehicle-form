@@ -11,7 +11,7 @@
   h1 { font-size: 20px; font-weight: 600; margin-bottom: 6px; }
   .sub-title { font-size: 17px; color: #4285f4; font-weight: 600; margin-bottom: 6px; }
   .top-desc { font-size: 13px; color: #777; margin-bottom: 2rem; }
-  .sec-title { font-size: 11px; font-weight: 600; color: #999; text-transform: uppercase; letter-spacing: .06em; margin: 1.5rem 0 .6rem; }
+  .sec-title { font-size: 14px; font-weight: 600; color: #555; letter-spacing: 0; margin: 1.5rem 0 .6rem; text-transform: none; }
   label.field-label { display: block; font-size: 13px; color: #555; margin-bottom: 5px; }
   input[type=text], select {
     width: 100%; padding: 9px 12px; border: 1px solid #ddd; border-radius: 8px;
@@ -195,6 +195,13 @@ function submitForm() {
   if (!name) { alert('이름을 입력해주세요.'); return; }
   if (!num) { alert('차량번호를 입력해주세요.'); return; }
   if (!model) { alert('차종/모델명을 입력해주세요.'); return; }
+
+  var anyChecked = false;
+  for (var ci = 0; ci < REASONS.length; ci++) {
+    var cel = document.querySelector('#cb-item-' + ci + ' input[type=checkbox]');
+    if (cel && cel.checked) { anyChecked = true; break; }
+  }
+  if (anyChecked && !doc) { alert('적용제외 사유를 선택하셨습니다.\n신청서 및 증빙서류 제출 여부를 선택해주세요.'); return; }
 
   if (APPS_SCRIPT_URL === 'SCRIPT_URL') {
     alert('관리자 설정이 필요합니다.\nAPPS_SCRIPT_URL을 설정해주세요.');
