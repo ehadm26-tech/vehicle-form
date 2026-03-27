@@ -244,11 +244,8 @@ function submitForm() {
     + '&doc=' + encodeURIComponent(payload.doc)
     + '&timestamp=' + encodeURIComponent(payload.timestamp);
 
-  var sc = document.createElement('script');
-  sc.src = APPS_SCRIPT_URL + '?callback=onSubmitDone&' + params;
-  document.body.appendChild(sc);
-
-  setTimeout(function() {
+  var img = new Image();
+  img.onload = function() {
     showMsg('success', '✓ 제출이 완료되었습니다. 감사합니다!');
     document.getElementById('f-name').value = '';
     document.getElementById('f-num').value = '';
@@ -257,7 +254,18 @@ function submitForm() {
     buildCheckboxGroup();
     btn.disabled = false;
     btn.textContent = '제출하기';
-  }, 1500);
+  };
+  img.onerror = function() {
+    showMsg('success', '✓ 제출이 완료되었습니다. 감사합니다!');
+    document.getElementById('f-name').value = '';
+    document.getElementById('f-num').value = '';
+    document.getElementById('f-model').value = '';
+    document.getElementById('f-doc').value = '';
+    buildCheckboxGroup();
+    btn.disabled = false;
+    btn.textContent = '제출하기';
+  };
+  img.src = APPS_SCRIPT_URL + '?' + params;
 }
 
 buildCheckboxGroup();
