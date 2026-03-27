@@ -48,6 +48,7 @@
     background: #fff8e1; border: 1px solid #ffe082; border-radius: 8px;
     padding: 10px 14px; font-size: 12px; color: #7a5800; margin-bottom: 1.5rem; display: none;
   }
+  .consent-box { background:#f8f9fa; border:1px solid #e0e0e0; border-radius:8px; padding:12px 16px; margin-bottom:1.5rem; }
   @media (max-width: 480px) { .container { margin: 0; border-radius: 0; } .row2 { grid-template-columns: 1fr; } }
 </style>
 </head>
@@ -55,7 +56,13 @@
 <div class="container">
   <h1>자원안보 위기 경보에 따른 승용차 5부제 시행</h1>
   <p class="sub-title">(세종중학교 교직원 대상)</p>
-  <p class="top-desc">입력하신 정보는 주차 및 승용차 요일제 관리에 활용됩니다.</p>
+  <div class="consent-box" id="consent-box">
+    <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
+      <input type="checkbox" id="consent-check" onchange="toggleConsent()" style="margin-top:3px;flex-shrink:0;accent-color:#4285f4;width:15px;height:15px;">
+      <span style="font-size:13px;color:#555;line-height:1.6;">입력하신 정보는 에너지 절약 및 승용차 요일제 관리에 활용됩니다. <strong style="color:#4285f4;">동의함</strong></span>
+    </label>
+  </div>
+  <div id="form-body" style="display:none;">
 
   <!-- ⚠️ Apps Script URL 미설정 시 안내 -->
   <div class="config-notice" id="config-notice">
@@ -87,24 +94,30 @@
   </div>
   <div class="cb-group" id="cb-group"></div>
 
-  <div class="sec-title" style="margin-top:1.5rem;">신청서 및 증빙서류</div>
+  <div class="sec-title" style="margin-top:1.5rem;">신청서 및 증빙서류<br><span style="color:#e53935;font-weight:600;font-size:13px;">(미제출(증빙서류 추가제출) 선택의 경우 2026.3.30 오전 11시까지 반드시 제출해 주세요)</span></div>
   <div class="field">
     <label class="field-label">제출 여부</label>
     <select id="f-doc">
       <option value="">선택해주세요</option>
       <option value="제출완료">제출완료</option>
-      <option value="미제출">미제출</option>
+      <option value="미제출(증빙서류 추가제출)">미제출(증빙서류 추가제출)</option>
       <option value="해당없음">해당없음</option>
     </select>
   </div>
 
   <button class="submit-btn" id="submit-btn" onclick="submitForm()">제출하기</button>
   <div class="result-msg" id="result-msg"></div>
+  </div>
 </div>
 
 <script>
 // ============================================================
 // ▼ 관리자 설정: Apps Script 배포 후 URL을 여기에 붙여넣으세요
+function toggleConsent() {
+  var checked = document.getElementById('consent-check').checked;
+  document.getElementById('form-body').style.display = checked ? 'block' : 'none';
+}
+
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxAZX-8VV7zZ7p8HJAgrtyF0HvaiAKhX7HDFFFVIp4ieD-roh5xZd9vguW1oSAKFUx5/exec';
 // ============================================================
 
