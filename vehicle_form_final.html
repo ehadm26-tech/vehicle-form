@@ -230,36 +230,34 @@ function submitForm() {
   btn.disabled = true;
   btn.textContent = '제출 중...';
 
-  const payload = {
-    name, num, model,
+  const params = new URLSearchParams({
+    name: name,
+    num: num,
+    model: model,
     reasons: reasons.join(', ') || '없음',
-    doc,
+    doc: doc,
     timestamp: new Date().toLocaleString('ko-KR')
-  };
+  });
 
-  var params = 'name=' + encodeURIComponent(payload.name)
-    + '&num=' + encodeURIComponent(payload.num)
-    + '&model=' + encodeURIComponent(payload.model)
-    + '&reasons=' + encodeURIComponent(payload.reasons)
-    + '&doc=' + encodeURIComponent(payload.doc)
-    + '&timestamp=' + encodeURIComponent(payload.timestamp);
-
-  var iframe = document.createElement('iframe');
-  iframe.style.display = 'none';
-  iframe.src = APPS_SCRIPT_URL + '?' + params;
-  document.body.appendChild(iframe);
-
-  setTimeout(function() {
+  fetch(APPS_SCRIPT_URL + '?' + params.toString(), {
+    method: 'GET',
+    mode: 'no-cors'
+  })
+  .then(function() {
     showMsg('success', '✓ 제출이 완료되었습니다. 감사합니다!');
     document.getElementById('f-name').value = '';
     document.getElementById('f-num').value = '';
     document.getElementById('f-model').value = '';
     document.getElementById('f-doc').value = '';
     buildCheckboxGroup();
+  })
+  .catch(function(error) {
+    showMsg('error', '제출 중 오류가 발생했습니다. 다시 시도해주세요.');
+  })
+  .finally(function() {
     btn.disabled = false;
     btn.textContent = '제출하기';
-    document.body.removeChild(iframe);
-  }, 2000);
+  });
 }
 
 buildCheckboxGroup();
