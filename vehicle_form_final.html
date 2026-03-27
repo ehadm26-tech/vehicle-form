@@ -94,13 +94,14 @@
   </div>
   <div class="cb-group" id="cb-group"></div>
 
-  <div class="sec-title" style="margin-top:1.5rem;">신청서 및 증빙서류<br><span style="color:#e53935;font-weight:600;font-size:13px;">(미제출(증빙서류 추가제출) 선택의 경우 2026.3.30 오전 11시까지 반드시 제출해 주세요)</span></div>
+  <div class="sec-title" style="margin-top:1.5rem;">신청서 및 증빙서류<br><span style="color:#e53935;font-weight:600;font-size:13px;">(미제출 또는 증빙서류 추가제출 선택의 경우 2026.3.30 오전 11시까지<br>반드시 행정실에 직접 제출해 주세요)</span></div>
   <div class="field">
     <label class="field-label">제출 여부</label>
     <select id="f-doc">
       <option value="">선택해주세요</option>
       <option value="제출완료">제출완료</option>
-      <option value="미제출(증빙서류 추가제출)">미제출(증빙서류 추가제출)</option>
+      <option value="미제출">미제출</option>
+      <option value="증빙서류 추가제출">증빙서류 추가제출</option>
       <option value="해당없음">해당없음</option>
     </select>
   </div>
@@ -140,7 +141,8 @@ const REASONS = [
     sub: '열악지역 기준: 최근접 정류장(역)까지 보행거리 800m 이상이거나, 출퇴근 시 배차간격이 30분을 초과하는 경우',
     docs: [
       '네이버 교통지도 등 출퇴근 경로 캡처 (거리 및 소요시간 표시)',
-      '장거리(30km 이상) 시: 주민등록등본 등 거주지 확인 가능한 서류'
+      '장거리(30km 이상) 시: 주민등록등본 등 거주지 확인 가능한 서류',
+      '열악지역 시: 버스나 지하철 배차 간격 등 확인 가능한 서류'
     ]},
   { value: '대중교통 미운행 시간 출퇴근', label: '대중교통 미운행 시간 출퇴근', sub: null,
     docs: ['대중교통 미운행 시간 근무 확인서 또는 근무표'] }
@@ -168,7 +170,7 @@ function buildCheckboxGroup() {
     html += '</label>';
     if (r.sub) { html += '<div class="cb-sub">' + r.sub + '</div>'; }
     html += '<div class="docs-panel" id="docs-' + i + '">';
-    html += '<div class="docs-panel-title">필요 증빙서류</div>';
+    html += '<div class="docs-panel-title">필요 증빙서류(해당 서류 모두 제출)</div>';
     html += '<ul>' + docsHtml + '</ul>';
     html += '</div></div>';
   }
